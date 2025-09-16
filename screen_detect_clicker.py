@@ -1,67 +1,55 @@
-import pygame
-import random
+import pyautogui
 import time
+import random
+import cv2
+import numpy as np
+from mss import mss
+from ultralytics import YOLO
 
-# Initialize Pygame
-pygame.init()
+# Load YOLO model
+model = YOLO("runs/detect/train3/weights/best.pt")  # adjust to your path
 
-# Screen setup
-WIDTH, HEIGHT = 600, 400
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Smart Bot Walker")
+# Define screen capture region
+monitor = {"top": 0, "left": 0, "width": 1920, "height": 1080}  # change for your screen
 
-# Colors
-WHITE = (255, 255, 255)
-BLUE = (50, 100, 255)
+sct = mss()
 
-# Bot setup
-bot_size = 20
-bot_x, bot_y = WIDTH // 2, HEIGHT // 2
-bot_speed = 3
+def random_delay(base=0.2, jitter=0.3):
+    time.sleep(base + random.uniform(0, jitter))
 
-# Start timer
-start_time = time.time()
-move_enabled = False
+def move_mouse_smoothly(x, y):
+    duration = random.uniform(0.2, 0.4)
+    pyautogui.moveTo(x + random.randint(-3, 3), y + random.randint(-3, 3), duration=duration)
 
-# Game loop
-running = True
-clock = pygame.time.Clock()
+while True:
+    # Capture screen
+    img = np.array(sct.grab(monitor))
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
-while running:
-    screen.fill(WHITE)
+    # Run YOLO detection
+    results = model(img_rgb)
 
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    for r in results:
+        boxes = r.boxes.xyxy.cpu().numpy()
+        confidences = r.boxes.conf.cpu().numpy()
+        class_ids = r.boxes.cls.cpu().numpy()
 
-    # Enable walking after 10 sec
-    if not move_enabled and time.time() - start_time >= 10:
-        move_enabled = True
+        for i, box in enumerate(boxes):
+            conf = confidences[i]
+            class_id = int(class_ids[i])
 
-    # Smart random walking
-    if move_enabled:
-        # Pick a random direction every few frames
-        if random.randint(1, 20) == 1:
-            dx = random.choice([-bot_speed, 0, bot_speed])
-            dy = random.choice([-bot_speed, 0, bot_speed])
-        else:
-            dx, dy = dx, dy  # keep going same way
+            if conf < 0.6:
+                continue  # ignore low-confidence
 
-        # Update bot position
-        bot_x += dx
-        bot_y += dy
+            x1, y1, x2, y2 = box
+            cx, cy = int((x1 + x2) / 2), int((y1 + y2) / 2)
 
-        # Keep inside screen
-        if bot_x < 0: bot_x = 0
-        if bot_x > WIDTH - bot_size: bot_x = WIDTH - bot_size
-        if bot_y < 0: bot_y = 0
-        if bot_y > HEIGHT - bot_size: bot_y = HEIGHT - bot_size
+            print(f"Detected: class={class_id} at ({cx}, {cy})")
 
-    # Draw bot
-    pygame.draw.rect(screen, BLUE, (bot_x, bot_y, bot_size, bot_size))
+            move_mouse_smoothly(cx, cy)
+            random_delay(0.1, 0.2)
+            pyautogui.click()
+            random_delay(0.5, 1.0)  # pause between clicks
 
-    pygame.display.flip()
-    clock.tick(30)  # 30 FPS
-
-pygame.quit()
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
