@@ -1,0 +1,55 @@
+{
+  "stats": {
+    "total_detections": 153,
+    "total_clicks": 53,
+    "total_right_clicks": 18,
+    "total_mounts": 47,
+    "exploration_sessions": 3,
+    "idle_actions": 10,
+    "areas_explored": 4,
+    "start_time": 1758023083.5426784
+  },
+  "class_priorities": {
+    "0": 1.0,
+    "0": 1.0
+  },
+  "explored_areas": [
+    {
+      "center": [
+        554,
+        429
+      ],
+      "radius": 75,
+      "timestamp": 1758024509.1486003,
+      "visit_count": 1
+    },
+    {
+      "center": [
+        1010,
+        540
+      ],
+      "radius": 75,
+      "timestamp": 1758024815.6444824,
+      "visit_count": 11
+    },
+    {
+      "center": [
+        431,
+        376
+      ],
+      "radius": 75,
+      "timestamp": 1758024724.4525325,
+      "visit_count": 1
+    },
+    {
+      "center": [
+        936,
+        583
+      ],
+      "radius": 75,
+      "timestamp": 1758024869.1806076,
+      "visit_count": 5
+    }
+  ],
+  "last_session": 1758024878.0013795
+}
