@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 39
+names: ['copper_ore', 'copperore', 'cotton', 'depletedmobOre_t3', 'enemy_factionKeeper', 'enemy_factionUndead', 'fiber tier 2', 'fiber tier 3', 'fiber tier 4', 'fiber tier 5', 'fiber_t3', 'fiber_t4', 'fiber_t5', 'fish', 'flax', 'limestone', 'mob', 'mobOre_t3', 'ore tier 2', 'ore tier 3', 'ore tier 4', 'ore tier 5', 'ore_t3', 'ore_t4', 'ore_t5', 'rock tier 1', 'rock tier 2', 'rock tier 3', 'rock tier 4', 'rock tier 5', 'rock_t3', 'rock_t4', 'rock_t5', 'sandstone', 'tin_ore', 'tinore', 'wood tier 3', 'wood tier 4', 'wood tier 5']
+
+roboflow:
+  workspace: cybersphinxxx
+  project: ao-resource-detection-viay1
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/cybersphinxxx/ao-resource-detection-viay1/dataset/1
